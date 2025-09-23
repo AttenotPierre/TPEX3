@@ -40,11 +40,20 @@ public class FormationTest {
         assertFalse(formation.contientMatiere(maths));
     }
 
+
+
+
     @Test
     void testGetCoefficientMatiereInexistante() {
         // prog n'est pas ajouté → doit lever une exception
         assertThrows(IllegalArgumentException.class, () -> formation.getCoefficient(prog));
     }
+
+
+
+
+
+
 
     @Test
     void testSupprimerMatiere() {
@@ -68,6 +77,8 @@ public class FormationTest {
         assertTrue(matieres.contains(maths));
         assertTrue(matieres.contains(physique));
     }
+
+
 
     @Test
     void testEqualsEtHashCodeSurIdentifiant() {

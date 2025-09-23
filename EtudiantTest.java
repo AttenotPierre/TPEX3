@@ -44,16 +44,23 @@ class EtudiantTest {
         assertEquals(12.0, etudiant.moyenneMatiere(math), 0.01);
     }
 
+
+
     @Test
     void testMoyenneMatiereSansNote() {
         assertEquals(0.0, etudiant.moyenneMatiere(info), 0.01);
     }
+
+
 
     @Test
     void testMoyenneMatiereNonPresente() {
         Matiere sport = new Matiere("Sport");
         assertEquals(-1.0, etudiant.moyenneMatiere(sport), 0.01);
     }
+
+
+
 
     @Test
     void testMoyenneGenerale() {
