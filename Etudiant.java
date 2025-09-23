@@ -63,6 +63,6 @@ public class Etudiant {
             }
         }
         if (totalCoeff == 0) return 0;
-        return somme / totalCoeff;
+        return Math.round((somme / totalCoeff)*10.0)/10.0;
     }
 }
