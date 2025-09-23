@@ -15,11 +15,16 @@ public class Etudiant {
         return identite;
     }
 
+
+
+
+
+
     public Formation getFormation() {
         return formation;
     }
 
-    // Ajouter une note à une matière
+    //ajouter une note à une matière
     public boolean ajouterNote(Matiere matiere, double note) {
         if (!formation.contientMatiere(matiere)) {
             System.out.println("Erreur : matière non présente dans la formation.");
@@ -33,7 +38,7 @@ public class Etudiant {
         return true;
     }
 
-    // Calculer la moyenne pour une matière
+    //calculer la moyenne matière
     public double moyenneMatiere(Matiere matiere) {
         if (!formation.contientMatiere(matiere)) {
             System.out.println("Erreur : matière non présente dans la formation.");
@@ -50,19 +55,19 @@ public class Etudiant {
         return somme / notesMatiere.size();
     }
 
-    // Calculer la moyenne générale pondérée par les coefficients
+    //calculer la moyenne
     public double moyenneGenerale() {
         double somme = 0;
         double totalCoeff = 0;
         for (Matiere matiere : formation.getMatieres()) {
             double coeff = formation.getCoefficient(matiere);
             double moyenne = moyenneMatiere(matiere);
-            if (moyenne >= 0) { // -1 si matière absente, 0 si pas de note
+            if (moyenne >= 0) {
                 somme += moyenne * coeff;
                 totalCoeff += coeff;
             }
         }
         if (totalCoeff == 0) return 0;
-        return somme / totalCoeff;
+        return Math.round(somme / totalCoeff)*10.0)/10.0;
     }
 }
