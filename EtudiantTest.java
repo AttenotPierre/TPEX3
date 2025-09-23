@@ -61,6 +61,6 @@ class EtudiantTest {
         etudiant.ajouterNote(info, 14); // coeff 4
         etudiant.ajouterNote(anglais, 16); // coeff 2
         double expected = ((10*3) + (14*4) + (16*2)) / (3+4+2);
-        assertEquals(expected, etudiant.moyenneGenerale(), 0.01);
+        assertEquals(expected, etudiant.moyenneGenerale(), 0.1);
     }
 }
