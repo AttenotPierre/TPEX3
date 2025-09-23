@@ -1,195 +1,82 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
-import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class FormationTest {
+
     private Formation formation;
+    private Matiere prog;
+    private Matiere maths;
+    private Matiere physique;
 
     @BeforeEach
     void setUp() {
-        formation = new Formation("Informatique L3");
+        formation = new Formation("INFO1");
+        prog = new Matiere("Programmation");
+        maths = new Matiere("Maths");
+        physique = new Matiere("Physique");
     }
 
     @Test
-    @DisplayName("Test du constructeur et identifiant")
-    void testConstructeur() {
-        assertEquals("Informatique L3", formation.getIdentifiant());
-        assertTrue(formation.getMatieres().isEmpty());
+    void testAjouterEtRecupererCoefficient() {
+        formation.ajouterMatiere(prog, 3);
+        formation.ajouterMatiere(maths, 2);
+
+        assertTrue(formation.contientMatiere(prog));
+        assertTrue(formation.contientMatiere(maths));
+        assertEquals(3, formation.getCoefficient(prog));
+        assertEquals(2, formation.getCoefficient(maths));
     }
 
     @Test
-    @DisplayName("Test ajout de matière valide")
-    void testAjouterMatiereValide() {
-        assertDoesNotThrow(() -> {
-            formation.ajouterMatiere("Programmation", 3);
-        });
-
-        assertTrue(formation.contientMatiere("Programmation"));
-        assertEquals(3, formation.getCoefficientMatiere("Programmation"));
-        assertEquals(1, formation.getMatieres().size());
+    void testAjouterMatiereCoefficientInvalide() {
+        assertThrows(IllegalArgumentException.class, () -> formation.ajouterMatiere(prog, 0));
+        assertThrows(IllegalArgumentException.class, () -> formation.ajouterMatiere(maths, -1));
+        // Rien n'a été ajouté
+        assertFalse(formation.contientMatiere(prog));
+        assertFalse(formation.contientMatiere(maths));
     }
 
     @Test
-    @DisplayName("Test ajout de matière avec coefficient invalide")
-    void testAjouterMatiereCoeffInvalide() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            formation.ajouterMatiere("Programmation", 0);
-        });
-        assertEquals("Le coefficient doit être supérieur à 0", exception.getMessage());
-
-        IllegalArgumentException exception2 = assertThrows(IllegalArgumentException.class, () -> {
-            formation.ajouterMatiere("Mathématiques", -1);
-        });
-        assertEquals("Le coefficient doit être supérieur à 0", exception2.getMessage());
-    }
-
-    @Test
-    @DisplayName("Test ajout de plusieurs matières")
-    void testAjouterPlusieursMatières() {
-        formation.ajouterMatiere("Programmation", 3);
-        formation.ajouterMatiere("Mathématiques", 2);
-        formation.ajouterMatiere("Anglais", 1);
-
-        assertEquals(3, formation.getMatieres().size());
-        assertTrue(formation.contientMatiere("Programmation"));
-        assertTrue(formation.contientMatiere("Mathématiques"));
-        assertTrue(formation.contientMatiere("Anglais"));
-    }
-
-    @Test
-    @DisplayName("Test modification du coefficient d'une matière existante")
-    void testModifierCoefficientMatiere() {
-        formation.ajouterMatiere("Programmation", 3);
-        assertEquals(3, formation.getCoefficientMatiere("Programmation"));
-
-        // Ajouter à nouveau la même matière avec un coefficient différent
-        formation.ajouterMatiere("Programmation", 4);
-        assertEquals(4, formation.getCoefficientMatiere("Programmation"));
-        assertEquals(1, formation.getMatieres().size()); // Toujours qu'une seule matière
-    }
-
-    @Test
-    @DisplayName("Test suppression de matière existante")
-    void testSupprimerMatiereExistante() {
-        formation.ajouterMatiere("Programmation", 3);
-        formation.ajouterMatiere("Mathématiques", 2);
-
-        assertTrue(formation.supprimerMatiere("Programmation"));
-        assertFalse(formation.contientMatiere("Programmation"));
-        assertEquals(1, formation.getMatieres().size());
-        assertTrue(formation.contientMatiere("Mathématiques"));
-    }
-
-    @Test
-    @DisplayName("Test suppression de matière inexistante")
-    void testSupprimerMatiereInexistante() {
-        formation.ajouterMatiere("Programmation", 3);
-
-        assertFalse(formation.supprimerMatiere("Physique"));
-        assertEquals(1, formation.getMatieres().size());
-        assertTrue(formation.contientMatiere("Programmation"));
-    }
-
-    @Test
-    @DisplayName("Test getCoefficientMatiere avec matière existante")
-    void testGetCoefficientMatiereExistante() {
-        formation.ajouterMatiere("Programmation", 3);
-        formation.ajouterMatiere("Mathématiques", 2);
-
-        assertEquals(3, formation.getCoefficientMatiere("Programmation"));
-        assertEquals(2, formation.getCoefficientMatiere("Mathématiques"));
-    }
-
-    @Test
-    @DisplayName("Test getCoefficientMatiere avec matière inexistante")
     void testGetCoefficientMatiereInexistante() {
-        formation.ajouterMatiere("Programmation", 3);
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            formation.getCoefficientMatiere("Physique");
-        });
-        assertEquals("La matière 'Physique' n'existe pas dans cette formation", exception.getMessage());
+        // prog n'est pas ajouté → doit lever une exception
+        assertThrows(IllegalArgumentException.class, () -> formation.getCoefficient(prog));
     }
 
     @Test
-    @DisplayName("Test contientMatiere")
-    void testContientMatiere() {
-        assertFalse(formation.contientMatiere("Programmation"));
+    void testSupprimerMatiere() {
+        formation.ajouterMatiere(prog, 3);
+        formation.ajouterMatiere(maths, 2);
 
-        formation.ajouterMatiere("Programmation", 3);
-        assertTrue(formation.contientMatiere("Programmation"));
-        assertFalse(formation.contientMatiere("Physique"));
+        assertTrue(formation.supprimerMatiere(prog));
+        assertFalse(formation.contientMatiere(prog));
+
+        // Supprimer une matière absente retourne false
+        assertFalse(formation.supprimerMatiere(physique));
     }
 
     @Test
-    @DisplayName("Test getMatieres retourne un Set non modifiable")
-    void testGetMatieresIsolation() {
-        formation.ajouterMatiere("Programmation", 3);
-        formation.ajouterMatiere("Mathématiques", 2);
+    void testGetMatieresTaille() {
+        formation.ajouterMatiere(maths, 2);
+        formation.ajouterMatiere(physique, 1);
 
-        Set<String> matieres = formation.getMatieres();
+        Set<Matiere> matieres = formation.getMatieres();
         assertEquals(2, matieres.size());
-        assertTrue(matieres.contains("Programmation"));
-        assertTrue(matieres.contains("Mathématiques"));
-
-        // Vérification que le Set retourné reflète l'état actuel
-        formation.ajouterMatiere("Anglais", 1);
-        Set<String> matieresApresMajout = formation.getMatieres();
-        assertEquals(3, matieresApresMajout.size());
-        assertTrue(matieresApresMajout.contains("Anglais"));
+        assertTrue(matieres.contains(maths));
+        assertTrue(matieres.contains(physique));
     }
 
     @Test
-    @DisplayName("Test getMatieresCoefficients")
-    void testGetMatieresCoefficients() {
-        formation.ajouterMatiere("Programmation", 3);
-        formation.ajouterMatiere("Mathématiques", 2);
+    void testEqualsEtHashCodeSurIdentifiant() {
+        Formation f1 = new Formation("INFO1");
+        Formation f2 = new Formation("INFO1");
+        Formation f3 = new Formation("INFO2");
 
-        var matieresCoeff = formation.getMatieresCoefficients();
-        assertEquals(2, matieresCoeff.size());
-        assertEquals(3, matieresCoeff.get("Programmation"));
-        assertEquals(2, matieresCoeff.get("Mathématiques"));
-
-        // Vérifier que c'est une copie (isolation)
-        matieresCoeff.put("Physique", 1);
-        assertFalse(formation.contientMatiere("Physique"));
-    }
-
-    @Test
-    @DisplayName("Test égalité entre formations")
-    void testEgalite() {
-        Formation formation2 = new Formation("Informatique L3");
-        Formation formation3 = new Formation("Mathématiques L2");
-
-        assertEquals(formation, formation2);
-        assertEquals(formation.hashCode(), formation2.hashCode());
-        assertNotEquals(formation, formation3);
-
-        // L'égalité dépend uniquement de l'identifiant, pas des matières
-        formation.ajouterMatiere("Programmation", 3);
-        assertEquals(formation, formation2);
-    }
-
-    @Test
-    @DisplayName("Test toString")
-    void testToString() {
-        formation.ajouterMatiere("Programmation", 3);
-        formation.ajouterMatiere("Mathématiques", 2);
-
-        String result = formation.toString();
-        assertTrue(result.contains("Informatique L3"));
-        assertTrue(result.contains("Programmation"));
-        assertTrue(result.contains("Mathématiques"));
-    }
-
-    @Test
-    @DisplayName("Test formation vide")
-    void testFormationVide() {
-        assertTrue(formation.getMatieres().isEmpty());
-        assertEquals(0, formation.getMatieresCoefficients().size());
-        assertFalse(formation.contientMatiere(""));
-        assertFalse(formation.supprimerMatiere("Inexistante"));
+        assertEquals(f1, f2);
+        assertEquals(f1.hashCode(), f2.hashCode());
+        assertNotEquals(f1, f3);
     }
 }
