@@ -83,6 +83,40 @@ public class Groupe {
         return membres.contains(e);
     }
 
+    public double calculerMoyenneMatiere(Matiere matiere) {
+        if (matiere == null) {
+            throw new IllegalArgumentException("La matière ne peut pas être null.");
+        }
+        if (membres.isEmpty()) return 0.0;
+
+        double somme = 0.0;
+        int compteur = 0;
+
+        for (Etudiant e : membres) {
+            double moyenne = e.moyenneMatiere(matiere);
+            if (moyenne >= 0) { // -1 si matière absente
+                somme += moyenne;
+                compteur++;
+            }
+        }
+        return (compteur == 0) ? 0.0 : Math.round((somme / compteur) * 10.0) / 10.0;
+    }
+
+    public double calculerMoyenneGenerale() {
+        if (membres.isEmpty()) return 0.0;
+
+        double somme = 0.0;
+        int compteur = 0;
+
+        for (Etudiant e : membres) {
+            double moyenne = e.moyenneGenerale();
+            somme += moyenne;
+            compteur++;
+        }
+        return (compteur == 0) ? 0.0 : Math.round((somme / compteur) * 10.0) / 10.0;
+    }
+
+
     @Override
     public String toString() {
         return "Groupe{" +
