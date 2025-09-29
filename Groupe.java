@@ -2,12 +2,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
- * Représente un groupe d'étudiants appartenant à la même formation.
- * Un étudiant ne peut être ajouté au groupe que si sa formation est la même
- * que celle du groupe.
- */
+ * represente un groupe d'etudiants appartenant à la meme formation
+ * un etudiant ne peut etre ajoute au groupe que si sa formation n'est la mem
+ * */
 public class Groupe {
 
     private final String nom;
@@ -34,13 +36,10 @@ public class Groupe {
     }
 
     /**
-     * Ajoute un étudiant au groupe si et seulement si sa formation est la même
-     * que celle du groupe. Ne fait rien si l'étudiant est déjà membre.
-     *
-     * @param etudiant étudiant à ajouter (non null)
-     * @return true si l'étudiant a été ajouté, false s'il était déjà présent
-     * @throws IllegalArgumentException si l'étudiant est null ou si sa formation diffère
-     */
+      ne fait rien si l'etudiant est deja membre
+      return true si l'etudiant a ete ajoute, false s'il etait deja present
+      throws IllegalArgumentException si l'étudiant est null
+      */
     public boolean ajouterEtudiant(Etudiant etudiant) {
         if (etudiant == null) {
             throw new IllegalArgumentException("L'étudiant ne peut pas être null.");
@@ -58,19 +57,17 @@ public class Groupe {
     }
 
     /**
-     * Supprime un étudiant du groupe s'il est présent.
-     *
-     * @param etudiant étudiant à supprimer
-     * @return true si un membre a été supprimé, false sinon
+      supprime un etudiant du groupe s'il est présent
+      @return true si un membre a ete supprime, sinon false
      */
     public boolean supprimerEtudiant(Etudiant etudiant) {
         if (etudiant == null) return false;
         return membres.remove(etudiant);
     }
 
-    /**
-     * Renvoie une vue non modifiable des membres du groupe.
-     */
+
+     //renvoie une vue non modifiable des membres du groupe
+
     public Set<Etudiant> getMembres() {
         return Collections.unmodifiableSet(membres);
     }
@@ -114,6 +111,20 @@ public class Groupe {
             compteur++;
         }
         return (compteur == 0) ? 0.0 : Math.round((somme / compteur) * 10.0) / 10.0;
+    }
+    public List<Etudiant> triAlpha() {
+        List<Etudiant> res = new ArrayList<>(membres);
+        res.sort(Comparator
+                .comparing((Etudiant e) -> e.getIdentite().getNom(), String.CASE_INSENSITIVE_ORDER)
+                .thenComparing(e -> e.getIdentite().getPrenom(), String.CASE_INSENSITIVE_ORDER)
+                .thenComparing(e -> e.getIdentite().getNip()));
+        return res;
+    }
+
+    public List<Etudiant> triAntiAlpha() {
+        List<Etudiant> res = triAlpha();
+        Collections.reverse(res);
+        return res;
     }
 
 
