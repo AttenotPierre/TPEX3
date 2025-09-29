@@ -1,5 +1,5 @@
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,14 +13,12 @@ public class GroupeTest {
 
     @BeforeEach
     void setUp() {
-
         infoL3 = new Formation("Informatique L3");
         mathsL3 = new Formation("Mathématiques L3");
 
-
-        aliceInfo = new Etudiant(new Identite("1", "Durand","Alice"), infoL3);
-        bobInfo   = new Etudiant(new Identite("2", "Martin","Bob"), infoL3);
-        claraMaths= new Etudiant(new Identite("3", "didi","Bernard"), mathsL3);
+        aliceInfo = new Etudiant(new Identite("1", "Durand", "Alice"), infoL3);
+        bobInfo   = new Etudiant(new Identite("2", "Martin", "Bob"), infoL3);
+        claraMaths= new Etudiant(new Identite("3", "Bernard", "Clara"), mathsL3);
     }
 
     @Test
@@ -84,4 +82,52 @@ public class GroupeTest {
         assertThrows(IllegalArgumentException.class, () -> new Groupe("", infoL3));
         assertThrows(IllegalArgumentException.class, () -> new Groupe("Nom", null));
     }
+
+    @Test
+    void moyenneMatiere_ok() {
+        Matiere maths = new Matiere("Maths");
+        Matiere algo = new Matiere("Algo");
+        infoL3.ajouterMatiere(maths, 2);
+        infoL3.ajouterMatiere(algo, 3);
+
+        Groupe g = new Groupe("Groupe E", infoL3);
+
+        aliceInfo.ajouterNote(maths, 10);
+        aliceInfo.ajouterNote(algo, 14);
+
+        bobInfo.ajouterNote(maths, 16);
+        bobInfo.ajouterNote(algo, 12);
+
+        g.ajouterEtudiant(aliceInfo);
+        g.ajouterEtudiant(bobInfo);
+
+        // Moyenne Maths = (10 + 16) / 2 = 13
+        assertEquals(13.0, g.calculerMoyenneMatiere(maths), 0.1);
+
+        // Moyenne Algo = (14 + 12) / 2 = 13
+        assertEquals(13.0, g.calculerMoyenneMatiere(algo), 0.1);
+    }
+
+    @Test
+    void moyenneGenerale_ok() {
+        Matiere maths = new Matiere("Maths");
+        Matiere algo = new Matiere("Algo");
+        infoL3.ajouterMatiere(maths, 2);
+        infoL3.ajouterMatiere(algo, 3);
+
+        Groupe g = new Groupe("Groupe F", infoL3);
+
+        aliceInfo.ajouterNote(maths, 10); // moyenne Alice : (10*2 + 14*3)/5 = 12.4
+        aliceInfo.ajouterNote(algo, 14);
+
+        bobInfo.ajouterNote(maths, 16);   // moyenne Bob   : (16*2 + 12*3)/5 = 13.6
+        bobInfo.ajouterNote(algo, 12);
+
+        g.ajouterEtudiant(aliceInfo);
+        g.ajouterEtudiant(bobInfo);
+
+        // Moyenne générale du groupe = (12.4 + 13.6)/2 = 13.0
+        assertEquals(13.0, g.calculerMoyenneGenerale(), 0.1);
+    }
 }
+
