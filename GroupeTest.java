@@ -129,5 +129,31 @@ public class GroupeTest {
         // Moyenne générale du groupe = (12.4 + 13.6)/2 = 13.0
         assertEquals(13.0, g.calculerMoyenneGenerale(), 0.1);
     }
+
+    @Test
+    void triParMerite_ok() {
+        Matiere maths = new Matiere("Maths");
+        Matiere algo = new Matiere("Algo");
+        infoL3.ajouterMatiere(maths, 2);
+        infoL3.ajouterMatiere(algo, 3);
+
+        Groupe g = new Groupe("Groupe G", infoL3);
+
+        aliceInfo.ajouterNote(maths, 10); // Moyenne Alice : 12.4
+        aliceInfo.ajouterNote(algo, 14);
+
+        bobInfo.ajouterNote(maths, 16);   // Moyenne Bob : 13.6
+        bobInfo.ajouterNote(algo, 12);
+
+        g.ajouterEtudiant(aliceInfo);
+        g.ajouterEtudiant(bobInfo);
+
+        var tries = g.triParMerite();
+
+        assertEquals(2, tries.size());
+        assertEquals(bobInfo, tries.get(0));   // Bob en premier (moyenne 13.6)
+        assertEquals(aliceInfo, tries.get(1)); // Alice en second (moyenne 12.4)
+    }
+
 }
 

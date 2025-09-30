@@ -127,6 +127,12 @@ public class Groupe {
         return res;
     }
 
+    public List<Etudiant> triParMerite() {
+        List<Etudiant> sorted = new ArrayList<>(membres);
+        sorted.sort(Comparator.comparingDouble(Etudiant::moyenneGenerale).reversed());
+        return sorted;
+    }
+
 
     @Override
     public String toString() {
